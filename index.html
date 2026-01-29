@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Чек-лист: Защита от кибербуллинга</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            color: #38bdf8;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            color: #cbd5e1;
+        }
+
+        .progress-bar {
+            background-color: #e5e7eb;
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #0ea5e9 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            padding: 0 30px 10px;
+            font-weight: bold;
+            color: #0284c7;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .module {
+            margin-bottom: 40px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f9fafb;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .module-icon {
+            font-size: 2em;
+            margin-right: 15px;
+            width: 40px;
+            text-align: center;
+        }
+
+        .module-title {
+            flex: 1;
+        }
+
+        .module-title h2 {
+            color: #c41e3a;
+            font-size: 1.4em;
+            margin: 0;
+        }
+
+        .module-count {
+            background-color: #0284c7;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .module-items {
+            display: none;
+            transition: max-height 0.3s ease;
+        }
+
+        .module-items.active {
+            display: block;
+        }
+
+        .category {
+            margin-bottom: 20px;
+        }
+
+        .category h3 {
+            color: #0284c7;
+            font-size: 1.1em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #0ea5e9;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: white;
+            border-radius: 6px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.2s;
+        }
+
+        .checkbox-item:hover {
+            border-color: #0ea5e9;
+            background-color: #f0f9ff;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            accent-color: #0284c7;
+        }
+
+        .checkbox-item label {
+            flex: 1;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked + label {
+            color: #10b981;
+            text-decoration: line-through;
+        }
+
+        .checkbox-item input[type="checkbox"]:checked {
+            accent-color: #10b981;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .footer {
+            background-color: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            border-top: 2px solid #e5e7eb;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .footer p {
+            margin: 10px 0;
+            color: #666;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 0.95em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0ea5e9;
+        }
+
+        button.secondary {
+            background-color: #10b981;
+        }
+
+        button.secondary:hover {
+            background-color: #059669;
+        }
+
+        .summary {
+            background-color: #dbeafe;
+            border-left: 4px solid #0284c7;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 6px;
+        }
+
+        .summary strong {
+            color: #0284c7;
+        }
+
+        .level-indicator {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        .level-critical {
+            color: #dc2626;
+        }
+
+        .level-warning {
+            color: #f59e0b;
+        }
+
+        .level-good {
+            color: #10b981;
+        }
+
+        .level-excellent {
+            color: #0284c7;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .button-group {
+                display: none;
+            }
+            .progress-bar {
+                display: none;
+            }
+            .module-items {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.5em;
+            }
+            .content {
+                padding: 15px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✅ ЧЕК-ЛИСТ: ЗАЩИТА ОТ КИБЕРБУЛЛИНГА</h1>
+            <p>Полный контрольный список для подростков и родителей</p>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-text">Прогресс: <span id="progressPercent">0</span>% (<span id="progressCount">0</span> / <span id="totalCount">0</span> пунктов)</div>
+
+        <div class="content">
+            <!-- МОДУЛЬ 1 -->
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-icon">🔐</div>
+                    <div class="module-title">
+                        <h2>МОДУЛЬ 1: ЗАЩИТА ПРОФИЛЯ</h2>
+                    </div>
+                    <div class="module-count" id="count-1">0/24</div>
+                </div>
+                <div class="module-items" id="module-1">
+                    <div class="category">
+                        <h3>Защита пароля и входа:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Установлен сложный пароль (8+ символов с буквами, цифрами, спецсимволами)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Пароль отличается от других аккаунтов</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Двухфакторная аутентификация включена</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Восстановительная почта указана и проверена</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Номер телефона привязан для восстановления</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Пароль не записан в блокноте или заметках</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Пароль не используется на публичных компьютерах</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Все устройства с доступом проверены на безопасность</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Приватность профиля:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Профиль установлен на приватный режим</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Только друзья видят посты и историю</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Новые заявки в друзья требуют подтверждения</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Список друзей скрыт от других пользователей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Тег на фото требует одобрения</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Поиск профиля по номеру телефона отключен</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Поиск профиля по email отключен</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Видны только друзьям комментарии и лайки</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Личная информация:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>НЕ опубликован номер телефона</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>НЕ опубликован домашний адрес</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>НЕ указана школа/университет (если не нужно)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>НЕ указано место работы в открытом доступе</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>НЕ опубликованы даты рождения и праздников</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>НЕ опубликованы номера документов</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>БИО профиля содержит только нейтральную информацию</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="1"><label>Связанные аккаунты проверены на безопасность</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- МОДУЛЬ 2 -->
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-icon">📸</div>
+                    <div class="module-title">
+                        <h2>МОДУЛЬ 2: БЕЗОПАСНОСТЬ КОНТЕНТА</h2>
+                    </div>
+                    <div class="module-count" id="count-2">0/24</div>
+                </div>
+                <div class="module-items" id="module-2">
+                    <div class="category">
+                        <h3>Фотографии и видео:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ загружаются интимные или полуинтимные фото</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ загружаются видео в нетрезвом или скомпрометирующем виде</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Фото в бикини/купальнике только для доверенных друзей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ используется реальное лицо в аватаре (если опасность)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Геолокация отключена на всех фото</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Проверяются метаданные фотографий перед загрузкой</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Фон на фото не выдает место проживания</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Люди на фото получают согласие перед публикацией</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Сообщения и комментарии:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ пишутся оскорбления в комментариях</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ пишутся личные данные других в комментариях</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ разглашаются секреты других людей в публичных постах</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ пишутся сообщения в гневе (написать и удалить)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Комментарии проверяются перед публикацией</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ используется мат и оскорбительная лексика</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ спамятся личные сообщения незнакомцам</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Чувствительные разговоры ведутся в личных сообщениях</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Контент и посты:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Посты соответствуют общепринятым нормам в интернете</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Позиции и мнения выражаются корректно</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ опубликованы скрытые данные друзей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Посты не содержат ложной или вводящей в заблуждение информации</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Не разглашается рабочая/школьная информация</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Посты отражают реальную, а не идеализированную жизнь</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>НЕ загружаются видео интимного характера</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="2"><label>Контент соответствует возрастному рейтингу</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- МОДУЛЬ 3 -->
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-icon">👥</div>
+                    <div class="module-title">
+                        <h2>МОДУЛЬ 3: УПРАВЛЕНИЕ КОНТАКТАМИ</h2>
+                    </div>
+                    <div class="module-count" id="count-3">0/24</div>
+                </div>
+                <div class="module-items" id="module-3">
+                    <div class="category">
+                        <h3>Список друзей:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Регулярно проверяется список друзей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Удалены подозрительные аккаунты</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Удалены люди, которых не помните</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Удалены поддельные и фейковые аккаунты</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Сокращены контакты со случайными знакомыми</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Оставлены только проверенные люди</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Список друзей скрыт от других пользователей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Есть черный список для потенциальных проблемных контактов</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Новые запросы:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Перед добавлением проверяется профиль человека</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Смотрятся взаимные друзья с новым контактом</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Проверяется история постов потенциального друга</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Отклоняются подозрительные запросы</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>НЕ добавляются незнакомые люди без уважительной причины</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Проверяется, реальный ли это человек (не боты)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Спрашивается, как они вас нашли</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Не добавляются слишком "красивые" незнакомцы (возможен фейк)</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Блокировка и ограничение:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Список заблокированных пользователей проверяется</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Проблемные контакты заблокированы</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Ограничены люди, которые видят ваши истории</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Ограничены люди, которые видят ваши посты</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Отключены сообщения от незнакомых людей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Отключены звонки от незнакомых людей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Используется функция "Ограничить" для ненавязчивых контактов</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="3"><label>Проверяются ограничения каждый месяц</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- МОДУЛЬ 4 -->
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-icon">🔔</div>
+                    <div class="module-title">
+                        <h2>МОДУЛЬ 4: УВЕДОМЛЕНИЯ И ВЗАИМОДЕЙСТВИЕ</h2>
+                    </div>
+                    <div class="module-count" id="count-4">0/16</div>
+                </div>
+                <div class="module-items" id="module-4">
+                    <div class="category">
+                        <h3>Настройка уведомлений:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Отключены уведомления для не критичной активности</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Отключены звуки и вибрация ночью</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Отключены уведомления от странных пользователей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Включены уведомления для попыток входа</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Включены уведомления при смене пароля</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Отключены маркетинговые уведомления</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Отключены push-уведомления от чужих сообщений</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Настроены уведомления только для важных событий</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Взаимодействие с контентом:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>НЕ ставятся лайки под оскорбительным контентом</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>НЕ переделяются оскорбления друзьям</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>НЕ переделяются слухи и клевета</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Не поддерживаются драмы в комментариях</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Не ставятся лайки под поддержкой травли</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Игнорируются провокационные посты</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Используется функция "Пожаловаться" на нарушения</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="4"><label>Не отвечается на троллей и провокаторов</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- МОДУЛЬ 5 -->
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-icon">🚨</div>
+                    <div class="module-title">
+                        <h2>МОДУЛЬ 5: РАСПОЗНАВАНИЕ И РЕАКЦИЯ НА БУЛЛИНГ</h2>
+                    </div>
+                    <div class="module-count" id="count-5">0/24</div>
+                </div>
+                <div class="module-items" id="module-5">
+                    <div class="category">
+                        <h3>Если вы жертва кибербуллинга:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Определено, что это кибербуллинг, а не просто критика</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Не отвечали агрессором на провокации</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Сделаны скриншоты всех оскорблений</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Сохранены ссылки на оскорбительные посты</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Записаны дата, время и автор сообщений</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Заблокирован агрессор во всех соцсетях</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Удален агрессор из друзей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Использована функция "Пожаловаться" на контент</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Действия при продолжении буллинга:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Рассказано об этом родителям или опекунам</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Обратились к школьному психологу</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Обратились к учителю или классному руководителю</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Обратились к администрации школы</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Обратились в социальные сети с жалобой</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Собраны все доказательства в одно место</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Рассмотрена возможность обращения в полицию</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Обратились к профессиональному психологу</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Если вы свидетель буллинга:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Определено, что происходит кибербуллинг</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Не распространяются оскорбления дальше</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Не ставятся лайки под издевательствами</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Напишено ободряющее сообщение жертве</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Оставлен позитивный комментарий под постом жертвы</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Пожалована администрации на оскорбительный контент</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Поговорено с агрессором (если возможно и безопасно)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="5"><label>Поддержана жертва в школе или офлайн</label></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- МОДУЛЬ 6 -->
+            <div class="module">
+                <div class="module-header" onclick="toggleModule(this)">
+                    <div class="module-icon">🛡️</div>
+                    <div class="module-title">
+                        <h2>МОДУЛЬ 6: УСТРОЙСТВА И ПРОГРАММЫ</h2>
+                    </div>
+                    <div class="module-count" id="count-6">0/24</div>
+                </div>
+                <div class="module-items" id="module-6">
+                    <div class="category">
+                        <h3>Безопасность устройств:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Установлены все обновления операционной системы</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Включен брандмауэр (firewall)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Установлено антивирусное ПО</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Отключена автозаполнение пароля на чужих устройствах</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Выполнен выход из аккаунта на чужих устройствах</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Проверены приложения для доступа к аккаунту</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Удалены неиспользуемые приложения</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Проверен журнал входов для подозрительной активности</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Браузер и интернет:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Включена защита от фишинга в браузере</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Удалены расширения, которые не используются</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Проверены расширения на права доступа</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Очищена история браузера (если нужно приватность)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Включен режим приватного просмотра</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Используется безопасный браузер (Chrome, Firefox, Edge)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Установлен VPN для защиты соединения</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Отключены автозаполнение пароля на чужих компьютерах</label></div>
+                    </div>
+
+                    <div class="category">
+                        <h3>Приложения и соцсети:</h3>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Проверены разрешения приложений для соцсетей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Отозваны права доступа старых приложений</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Удалены приложения, требующие слишком много данных</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Проверены подключенные аккаунты (Google, Facebook и т.д.)</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Отключены приложения, имеющие доступ к вашим данным</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Удалены неиспользуемые приложения</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Установлены только официальные приложения соцсетей</label></div>
+                        <div class="checkbox-item"><input type="checkbox" class="item" data-module="6"><label>Проверены рецензии приложений перед установкой</label></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number" id="totalChecked">0</div>
+                <div class="stat-label">Пунктов выполнено</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="remainingCount">0</div>
+                <div class="stat-label">Осталось выполнить</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="percentComplete">0%</div>
+                <div class="stat-label">Процент завершения</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number" id="levelText">Начинаем</div>
+                <div class="stat-label">Уровень безопасности</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="button-group">
+                <button onclick="window.print()">🖨️ Печать</button>
+                <button class="secondary" onclick="resetAll()">↺ Сбросить всё</button>
+                <button class="secondary" onclick="downloadResults()">📥 Скачать результаты</button>
+            </div>
+            <p>✅ ЧЕК-ЛИСТ: ЗАЩИТА ОТ КИБЕРБУЛЛИНГА | Январь 2026</p>
+            <p>Начните с самого важного и постепенно доводите до совершенства!</p>
+        </div>
+    </div>
+
+    <script>
+        const items = document.querySelectorAll('.item');
+        
+        items.forEach(item => {
+            item.addEventListener('change', updateProgress);
+        });
+
+        function toggleModule(header) {
+            const items = header.nextElementSibling;
+            items.classList.toggle('active');
+        }
+
+        function updateProgress() {
+            const allItems = document.querySelectorAll('.item');
+            const checkedItems = document.querySelectorAll('.item:checked');
+            const totalItems = allItems.length;
+            const checkedCount = checkedItems.length;
+            const percentage = Math.round((checkedCount / totalItems) * 100);
+
+            document.getElementById('totalCount').textContent = totalItems;
+            document.getElementById('progressCount').textContent = checkedCount;
+            document.getElementById('progressPercent').textContent = percentage;
+            document.getElementById('progressFill').style.width = percentage + '%';
+
+            document.getElementById('totalChecked').textContent = checkedCount;
+            document.getElementById('remainingCount').textContent = totalItems - checkedCount;
+            document.getElementById('percentComplete').textContent = percentage + '%';
+
+            // Обновление уровня
+            let level = 'Начинаем';
+            let levelClass = 'level-critical';
+            if (percentage < 30) {
+                level = 'Требуется работа';
+                levelClass = 'level-critical';
+            } else if (percentage < 60) {
+                level = 'Хороший старт';
+                levelClass = 'level-warning';
+            } else if (percentage < 90) {
+                level = 'Почти готово';
+                levelClass = 'level-good';
+            } else {
+                level = 'Отлично защищены!';
+                levelClass = 'level-excellent';
+            }
+            
+            const levelText = document.getElementById('levelText');
+            levelText.textContent = level;
+            levelText.className = 'stat-number ' + levelClass;
+
+            // Обновление счетчиков модулей
+            for (let i = 1; i <= 6; i++) {
+                const moduleItems = document.querySelectorAll(`#module-${i} .item`);
+                const moduleChecked = document.querySelectorAll(`#module-${i} .item:checked`);
+                document.getElementById(`count-${i}`).textContent = moduleChecked.length + '/' + moduleItems.length;
+            }
+
+            // Сохранение в localStorage
+            const state = {};
+            document.querySelectorAll('.item').forEach((item, index) => {
+                state[index] = item.checked;
+            });
+            localStorage.setItem('checklist-state', JSON.stringify(state));
+        }
+
+        function resetAll() {
+            if (confirm('Вы уверены? Все отметки будут удалены.')) {
+                document.querySelectorAll('.item').forEach(item => {
+                    item.checked = false;
+                });
+                updateProgress();
+                localStorage.removeItem('checklist-state');
+            }
+        }
+
+        function downloadResults() {
+            const state = JSON.parse(localStorage.getItem('checklist-state') || '{}');
+            const checkedCount = Object.values(state).filter(v => v).length;
+            const totalCount = Object.keys(state).length;
+            const percentage = Math.round((checkedCount / totalCount) * 100);
+
+            const text = `ЧЕК-ЛИСТ: ЗАЩИТА ОТ КИБЕРБУЛЛИНГА
+РЕЗУЛЬТАТЫ ПРОВЕРКИ
+
+Выполнено: ${checkedCount} из ${totalCount} пунктов
+Процент завершения: ${percentage}%
+
+${percentage < 30 ? 'Статус: Требуется срочная работа' : ''}
+${percentage >= 30 && percentage < 60 ? 'Статус: Хороший старт' : ''}
+${percentage >= 60 && percentage < 90 ? 'Статус: Почти готово' : ''}
+${percentage >= 90 ? 'Статус: Отлично защищены!' : ''}
+
+Дата проверки: ${new Date().toLocaleDateString('ru-RU')}
+`;
+
+            const blob = new Blob([text], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'checklist-results.txt';
+            a.click();
+        }
+
+        // Загрузка сохраненного состояния
+        window.addEventListener('load', () => {
+            const state = JSON.parse(localStorage.getItem('checklist-state') || '{}');
+            document.querySelectorAll('.item').forEach((item, index) => {
+                if (state[index]) {
+                    item.checked = true;
+                }
+            });
+            updateProgress();
+        });
+
+        // Раскрытие первого модуля по умолчанию
+        window.addEventListener('load', () => {
+            document.getElementById('module-1').classList.add('active');
+        });
+    </script>
+</body>
+</html>
